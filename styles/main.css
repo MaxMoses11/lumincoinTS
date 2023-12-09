@@ -11,3 +11,23 @@ body {
     height: 450px;
     border-right: 1px solid gray;
 }
+
+.nav-link:hover span {
+    color: white;
+}
+
+.btn:hover svg path {
+    fill: white;
+}
+
+.active span{
+    color: white;
+}
+
+.active svg path {
+    fill: white;
+}
+
+.active .arrow {
+    rotate: 90deg;
+}
