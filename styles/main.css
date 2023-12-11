@@ -1,6 +1,8 @@
+@import "~bootstrap/scss/bootstrap";
+
 @font-face {
     font-family: "Roboto-Regular";
-    src: url("../static/fonts/Roboto-Regular.ttf");
+    src: url("/fonts/Roboto-Regular.ttf");
 }
 
 body {

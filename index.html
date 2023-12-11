@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Lumincoin Finance</title>
-    <link href="node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title id="page-title">Lumincoin Finance</title>
+    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="styles/main.css">
 </head>
 <body>
@@ -13,7 +13,7 @@
          style="width: 235px;">
         <div class="text-center border-bottom border-secondary border-opacity-25 pb-3 pt-4 mt-3 px-3">
             <a href="#" class="mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
-                <img src="static/images/small-logo.png" alt="Logo">
+                <img src="/images/small-logo.png" alt="Logo">
             </a>
         </div>
         <ul class="nav nav-pills flex-column mb-auto fs-6 px-3 pt-5">
@@ -79,13 +79,13 @@
             </li>
         </ul>
         <div class="px-3 mb-3 fw-bold">
-            Баланс: <span class="text-primary">500$</span>
+            Баланс: <span id="balance" class="text-primary">500$</span>
         </div>
-        <div class="dropdown px-3 pt-3 pb-4 border-top border-secondary border-opacity-25">
+        <div id="profile" class="dropdown px-3 pt-3 pb-4 border-top border-secondary border-opacity-25">
             <a href="#" class="d-flex align-items-center link-dark text-decoration-none"
                data-bs-toggle="dropdown" aria-expanded="false">
-                <img src="static/images/user-icon.png" alt="User icon" class="rounded-circle me-2">
-                <span class="text-primary-emphasis">RomanChernov</span>
+                <img src="/images/user-icon.png" alt="User icon" class="rounded-circle me-2">
+                <span id="profile-full-name" class="text-primary-emphasis">RomanChernov</span>
             </a>
             <ul class="dropdown-menu text-small shadow">
                 <li><a class="dropdown-item" href="#">Logout</a></li>
