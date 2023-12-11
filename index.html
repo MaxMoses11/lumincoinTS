@@ -2,14 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Редактирование дохода/расхода</title>
+    <title>Lumincoin Finance</title>
     <link href="node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="styles/main.css">
 </head>
 <body>
 
 <main class="d-flex flex-nowrap min-vh-100">
-
     <div class="d-flex flex-column justify-content-between flex-shrink-0 bg-light border-end border-secondary border-opacity-25 bg-white"
          style="width: 235px;">
         <div class="text-center border-bottom border-secondary border-opacity-25 pb-3 pt-4 mt-3 px-3">
@@ -19,7 +18,8 @@
         </div>
         <ul class="nav nav-pills flex-column mb-auto fs-6 px-3 pt-5">
             <li class="nav-item">
-                <a href="#" class="nav-link link-dark btn btn-outline-primary d-flex align-items-center" aria-current="page">
+                <a href="#" class="nav-link link-dark btn btn-outline-primary d-flex align-items-center"
+                   aria-current="page">
                     <svg class="me-2" width="15" height="14" viewBox="0 0 15 14" fill="none"
                          xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" clip-rule="evenodd"
@@ -55,7 +55,7 @@
                 </a>
             </li>
             <li>
-                <button class="nav-link link-dark btn active btn-outline-primary w-100 d-flex justify-content-between align-items-center rounded border-0 collapsed"
+                <button class="nav-link link-dark btn btn-outline-primary w-100 d-flex justify-content-between align-items-center rounded border-0 collapsed"
                         data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="false">
                     <span>Категории</span>
                     <svg class="arrow" width="7" height="14" viewBox="0 0 7 14" fill="none"
@@ -69,7 +69,7 @@
                 <div class="collapse show border-5 border-primary border-opacity-100" id="home-collapse">
                     <ul class="nav nav-pills flex-column mb-auto fs-6 btn-toggle-nav list-unstyled fw-normal small">
                         <li><a href="#"
-                               class="btn btn-outline-primary border-0 w-100 ps-3 d-inline-flex text-decoration-none active">Доходы</a>
+                               class="btn btn-outline-primary border-0 w-100 ps-3 d-inline-flex text-decoration-none">Доходы</a>
                         </li>
                         <li><a href="#"
                                class="btn btn-outline-primary border-0 w-100 ps-3 d-inline-flex text-decoration-none">Расходы</a>
@@ -93,34 +93,13 @@
         </div>
     </div>
 
-    <div class="container py-5">
-        <h1 class="text-primary-emphasis fw-bold my-5">Редактирование дохода/расхода</h1>
-        <div class="w-50 mb-4 d-flex flex-column gap-2">
-            <input type="text"
-                   class="w-75 px-3 py-2 border-1 border-secondary rounded border-opacity-25 fs-6"
-                   placeholder="Тип..." value="Доход">
-            <input type="text"
-                   class="w-75 px-3 py-2 border-1 border-secondary rounded border-opacity-25 fs-6"
-                   placeholder="Категория..." value="Зарплата">
-            <input type="text"
-                   class="w-75 px-3 py-2 border-1 border-secondary rounded border-opacity-25 fs-6"
-                   placeholder="Сумма в $..." value="500$">
-            <input type="text"
-                   class="w-75 px-3 py-2 border-1 border-secondary rounded border-opacity-25 fs-6"
-                   placeholder="Дата..." value="11.09.2022">
-            <input type="text"
-                   class="w-75 px-3 py-2 border-1 border-secondary rounded border-opacity-25 fs-6"
-                   placeholder="Комментарий..." value="">
-        </div>
-        <div class="row d-flex ms-0 gap-3">
-            <button type="button" class="px-3 py-2 btn btn-success w-auto">Сохранить</button>
-            <button type="button" class="px-3 py-2 btn btn-danger w-auto">Отмена</button>
-        </div>
-    </div>
-
+    <div id="content"></div>
 </main>
 
+
 <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="scripts/pie.js"></script>
 <script src="scripts/sidebars.js"></script>
 </body>
 </html>
