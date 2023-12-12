@@ -1,3 +1,6 @@
+import {Main} from "./components/main.js";
+
+
 export class Router {
     constructor() {
         this.contentElement = document.getElementById('content');
@@ -26,6 +29,7 @@ export class Router {
                 title: 'Главная',
                 template: 'templates/main.html',
                 load: () => {
+                    new Main()
                 }
             },
             {
