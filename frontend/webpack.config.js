@@ -25,8 +25,18 @@ module.exports = {
                 {from: "styles", to: "styles"},
                 {from: "static/fonts", to: "fonts"},
                 {from: "static/images", to: "images"},
-                {from: "src/hzkak", to: "hzkak"},
             ],
         }),
-    ]
+    ],
+    module: {
+        rules: [
+            {
+                test: /\.css$/,
+                use: [
+                    'style-loader',
+                    'css-loader'
+                ]
+            }
+        ]
+    }
 };
