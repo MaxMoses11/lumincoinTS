@@ -12,6 +12,10 @@ body {
     border-right: 1px solid gray;
 }
 
+.menu-item {
+    font-size: 14px;
+}
+
 .nav-link:hover span {
     color: white;
 }
