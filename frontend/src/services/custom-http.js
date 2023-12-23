@@ -1,4 +1,4 @@
-import {Auth} from "./auth";
+import {Auth} from "./auth.js";
 
 export class CustomHttp {
 
@@ -11,6 +11,11 @@ export class CustomHttp {
                 'Accept': 'application/json',
             }
         };
+
+        let token = localStorage.getItem(Auth.accessTokenKey);
+        if (token) {
+            params.headers['x-auth-token'] = token;
+        }
 
         if (body) {
             params.body = JSON.stringify(body);

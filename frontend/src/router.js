@@ -9,6 +9,7 @@ import {CreateExpenses} from "./components/create-expenses.js";
 import {EditIncoming} from "./components/edit-incoming.js";
 import {CreateIncExpItem} from "./components/create-inc-exp-item.js";
 import {EditIncExpItem} from "./components/edit-inc-exp-item.js";
+import {EditExpenses} from "./components/edit-expenses.js";
 
 export class Router {
     constructor() {
@@ -97,7 +98,7 @@ export class Router {
                 title: 'Редактировать категорию расходов',
                 template: 'templates/edit-expenses.html',
                 load: () => {
-                    new EditIncoming();
+                    new EditExpenses();
                 }
             },
             {
