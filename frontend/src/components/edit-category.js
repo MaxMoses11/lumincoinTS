@@ -1,25 +1,28 @@
-import {Expenses} from "./expenses.js";
 import {CustomHttp} from "../services/custom-http.js";
 import {config} from "../config/config.js";
+import {Categories} from "./categories.js";
 
-export class EditExpenses {
-    editCategoryId = Expenses.categoryId;
+export class EditCategory {
+    editCategoryId = Categories.categoryId;
+    typeCategory = null;
     nameInput = null;
     editBtn = null;
-    constructor() {
+    constructor(type) {
+        this.typeCategory = type;
+
         this.nameInput = document.getElementById('name-input');
         this.editBtn = document.getElementById('edit-btn');
 
         this.init();
 
         this.editBtn.onclick = () => {
-            return this.editExpenseCategory();
+            return this.editCategory();
         }
     }
 
     async init() {
         if (this.editCategoryId) {
-            const result = await CustomHttp.request(config.host + 'categories/expense/' + this.editCategoryId);
+            const result = await CustomHttp.request(config.host + 'categories/' + this.typeCategory + '/' + this.editCategoryId);
 
             if (result && !result.error) {
                 this.nameInput.value = result.title;
@@ -29,8 +32,8 @@ export class EditExpenses {
         }
     }
 
-    async editExpenseCategory() {
-        const result = await CustomHttp.request(config.host + 'categories/expense/' + this.editCategoryId, 'PUT', {
+    async editCategory() {
+        const result = await CustomHttp.request(config.host + 'categories/' + this.typeCategory + '/' + this.editCategoryId, 'PUT', {
             title: this.nameInput.value,
         });
 
@@ -38,6 +41,6 @@ export class EditExpenses {
             throw new Error(result.error);
         }
 
-        location.href = '#/expenses';
+        location.href = this.typeCategory === 'expense' ? '#/expenses' : '#/incoming';
     }
 }

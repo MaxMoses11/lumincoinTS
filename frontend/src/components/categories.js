@@ -1,47 +1,58 @@
 import {CustomHttp} from "../services/custom-http.js";
 import {config} from "../config/config.js";
 
-export class Expenses {
-    expensesCategoriesList = null;
-    expensesCardsElement = null;
+export class Categories {
+    typeCategories = null;
+    categoriesList = null;
+    cardsElement = null;
     static categoryId = null;
 
-    constructor() {
-        this.expensesCardsElement = document.getElementById('expenses-cards');
+    constructor(type) {
+        this.typeCategories = type;
+        
+        this.cardsElement = document.getElementById('cards');
 
-        const that = this;
-        this.expensesCardsElement.onclick = (event) => {
+        this.cardsElement.onclick = (event) => {
             let target = event.target;
             if (!target.classList.contains('remove-category') && !target.classList.contains('edit-category')) {
                 return;
             }
-            Expenses.categoryId = target.parentElement.parentElement.getAttribute('id').split('-')[1];
-            console.log(Expenses.categoryId);
+            Categories.categoryId = target.parentElement.parentElement.getAttribute('id').split('-')[1];
+            console.log(Categories.categoryId);
         }
 
         document.getElementById('success-remove').onclick = () => {
-            return this.deleteCategoryExpense(Expenses.categoryId);
+            return this.deleteCategory(Categories.categoryId);
         }
         this.init();
     }
 
     async init() {
-        const result = await CustomHttp.request(config.host + 'categories/expense');
+        // let result = null;
+        // if (this.typeCategories === 'expenses') {
+        //     result = await CustomHttp.request(config.host + 'categories/expense');
+        // } else {
+        //     result = await CustomHttp.request(config.host + 'categories/income');
+        // }
+
+        const result = await CustomHttp.request(config.host
+                + 'categories/' + this.typeCategories);
+
         if (result) {
             if (result.error) {
                 throw new Error(result.error);
             }
-            this.expensesCategoriesList = result;
-            this.createExpensesCategoriesCards();
+            this.categoriesList = result;
+            this.createCategoriesCards(this.typeCategories);
         }
     }
 
-    createExpensesCategoriesCards() {
+    createCategoriesCards() {
 
-        this.expensesCategoriesList.forEach(item => {
+        this.categoriesList.forEach(item => {
             const cardElement = document.createElement('div');
             cardElement.classList.add('card');
-            cardElement.setAttribute('id', 'expense-' + item.id);
+            cardElement.setAttribute('id', 'card-' + item.id);
 
             const cardBodyElement = document.createElement('div');
             cardBodyElement.classList.add('card-body');
@@ -52,7 +63,7 @@ export class Expenses {
 
             const cardBodyEditElement = document.createElement('a');
             cardBodyEditElement.classList.add('btn', 'btn-primary', 'me-2', 'edit-category');
-            cardBodyEditElement.setAttribute('href', '#/edit-expenses');
+            cardBodyEditElement.setAttribute('href', this.typeCategories === 'expense' ? '#/edit-expenses' : '#/edit-incoming');
             cardBodyEditElement.innerText = 'Редактировать';
 
             const cardBodyRemoveElement = document.createElement('a');
@@ -68,7 +79,7 @@ export class Expenses {
 
             cardElement.appendChild(cardBodyElement);
 
-            this.expensesCardsElement.appendChild(cardElement);
+            this.cardsElement.appendChild(cardElement);
         });
 
         const newCardElement = document.createElement('a');
@@ -82,17 +93,17 @@ export class Expenses {
             '</div>\n' +
             '</div>';
         newCardElement.classList.add('card', 'new-card');
-        newCardElement.setAttribute('href', '#/create-expenses');
+        newCardElement.setAttribute('href', this.typeCategories === 'expense' ? '#/create-expenses' : '#/create-incoming');
 
-        this.expensesCardsElement.appendChild(newCardElement);
+        this.cardsElement.appendChild(newCardElement);
     }
 
-    async deleteCategoryExpense(categoryId) {
+    async deleteCategory(categoryId) {
 
-        const result = await CustomHttp.request(config.host + 'categories/expense/' + categoryId, 'DELETE');
+        const result = await CustomHttp.request(config.host + 'categories/' + this.typeCategories + '/' + categoryId, 'DELETE');
 
         if (result && !result.error) {
-            this.expensesCardsElement.innerHTML = '';
+            this.cardsElement.innerHTML = '';
             this.init();
         } else {
             throw new Error(result.error);
