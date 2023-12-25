@@ -19,7 +19,7 @@
         <ul class="nav nav-pills flex-column mb-auto fs-6 px-3 pt-5">
             <li class="nav-item">
                 <a href="#" class="nav-link link-dark btn btn-outline-primary d-flex align-items-center"
-                   aria-current="page">
+                   aria-current="page" id="main">
                     <svg class="me-2" width="15" height="14" viewBox="0 0 15 14" fill="none"
                          xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" clip-rule="evenodd"
@@ -37,7 +37,7 @@
                 </a>
             </li>
             <li>
-                <a href="#/incoming-expenses"
+                <a href="#/incoming-expenses" id="operations"
                    class="nav-link link-dark btn btn-outline-primary d-flex align-items-center">
                     <svg class="me-2" width="16" height="16" viewBox="0 0 16 16" fill="none"
                          xmlns="http://www.w3.org/2000/svg">
@@ -57,7 +57,7 @@
             </li>
             <li>
                 <button class="nav-link link-dark btn btn-outline-primary w-100 d-flex justify-content-between align-items-center rounded border-0 collapsed"
-                        data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="false">
+                        data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="false" id="categories">
                     <span class="menu-item">Категории</span>
                     <svg class="arrow" width="7" height="14" viewBox="0 0 7 14" fill="none"
                          xmlns="http://www.w3.org/2000/svg">
@@ -69,11 +69,11 @@
 
                 <div class="collapse border-5 border-primary border-opacity-100" id="home-collapse">
                     <ul class="nav nav-pills flex-column mb-auto fs-6 btn-toggle-nav list-unstyled fw-normal small">
-                        <li><a href="#/incoming"
+                        <li><a href="#/incoming" id="income"
                                class="menu-item btn btn-outline-primary border-0 w-100 ps-3 d-inline-flex text-decoration-none">
                             <span class="menu-item">Доходы</span></a>
                         </li>
-                        <li><a href="#/expenses"
+                        <li><a href="#/expenses" id="expense"
                                class="menu-item btn btn-outline-primary border-0 w-100 ps-3 d-inline-flex text-decoration-none">
                             <span class="menu-item">Расходы</span></a>
                         </li>

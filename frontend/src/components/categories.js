@@ -1,5 +1,6 @@
 import {CustomHttp} from "../services/custom-http.js";
 import {config} from "../config/config.js";
+import {RemoveActive} from "../utils/remove-active.js";
 
 export class Categories {
     typeCategories = null;
@@ -9,7 +10,13 @@ export class Categories {
 
     constructor(type) {
         this.typeCategories = type;
-        
+        RemoveActive.remove();
+        if (this.typeCategories === 'income') {
+            document.getElementById('income').classList.add('active');
+        } else {
+            document.getElementById('expense').classList.add('active');
+        }
+
         this.cardsElement = document.getElementById('cards');
 
         this.cardsElement.onclick = (event) => {
@@ -28,13 +35,6 @@ export class Categories {
     }
 
     async init() {
-        // let result = null;
-        // if (this.typeCategories === 'expenses') {
-        //     result = await CustomHttp.request(config.host + 'categories/expense');
-        // } else {
-        //     result = await CustomHttp.request(config.host + 'categories/income');
-        // }
-
         const result = await CustomHttp.request(config.host
                 + 'categories/' + this.typeCategories);
 

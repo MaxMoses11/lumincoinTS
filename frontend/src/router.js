@@ -1,7 +1,7 @@
 import {Main} from "./components/main.js";
 import {Form} from "./components/form.js";
 import {Auth} from "./services/auth.js";
-import {IncomingExpenses} from "./components/incoming-expenses.js";
+import {Operations} from "./components/operations.js";
 import {CreateIncExpItem} from "./components/create-inc-exp-item.js";
 import {EditIncExpItem} from "./components/edit-inc-exp-item.js";
 import {Categories} from "./components/categories.js";
@@ -63,7 +63,7 @@ export class Router {
                 title: 'Доходы & расходы',
                 template: 'templates/incoming-expenses.html',
                 load: () => {
-                    new IncomingExpenses();
+                    new Operations();
                 }
             },
             {

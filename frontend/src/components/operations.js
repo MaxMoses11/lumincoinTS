@@ -1,15 +1,11 @@
-import {Pie} from "../utils/pie.js";
-import {Auth} from "../services/auth.js";
 import {CheckAccess} from "../utils/check-access";
 import {RemoveActive} from "../utils/remove-active";
 
-export class Main {
+export class Operations {
     constructor() {
-        new Pie();
-
         CheckAccess.check();
 
         RemoveActive.remove();
-        document.getElementById('main').classList.add('active');
+        document.getElementById('operations').classList.add('active');
     }
 }
