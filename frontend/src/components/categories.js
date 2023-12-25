@@ -1,6 +1,7 @@
 import {CustomHttp} from "../services/custom-http.js";
 import {config} from "../config/config.js";
 import {RemoveActive} from "../utils/remove-active.js";
+import {HtmlBlocks} from "../config/html-blocks.js";
 
 export class Categories {
     typeCategories = null;
@@ -25,7 +26,6 @@ export class Categories {
                 return;
             }
             Categories.categoryId = target.parentElement.parentElement.getAttribute('id').split('-')[1];
-            console.log(Categories.categoryId);
         }
 
         document.getElementById('success-remove').onclick = () => {
@@ -83,15 +83,8 @@ export class Categories {
         });
 
         const newCardElement = document.createElement('a');
-        newCardElement.innerHTML =
-            '<div class="card-body d-flex justify-content-center align-items-center p-5">\n' +
-            '<div>\n' +
-            '<svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">\n' +
-            '<path d="M14.5469 6.08984V9.05664H0.902344V6.08984H14.5469ZM9.32422 0.511719V15.0039H6.13867V0.511719H9.32422Z"\n' +
-            'fill="#CED4DA"/>\n' +
-            '</svg>\n' +
-            '</div>\n' +
-            '</div>';
+        newCardElement.innerHTML = HtmlBlocks.cardElement;
+
         newCardElement.classList.add('card', 'new-card');
         newCardElement.setAttribute('href', this.typeCategories === 'expense' ? '#/create-expenses' : '#/create-incoming');
 

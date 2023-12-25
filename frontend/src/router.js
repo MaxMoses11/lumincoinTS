@@ -61,7 +61,7 @@ export class Router {
             {
                 route: '#/incoming-expenses',
                 title: 'Доходы & расходы',
-                template: 'templates/incoming-expenses.html',
+                template: 'templates/operations.html',
                 load: () => {
                     new Operations();
                 }
