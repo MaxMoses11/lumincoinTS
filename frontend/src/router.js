@@ -2,8 +2,8 @@ import {Main} from "./components/main.js";
 import {Form} from "./components/form.js";
 import {Auth} from "./services/auth.js";
 import {Operations} from "./components/operations.js";
-import {CreateIncExpItem} from "./components/create-inc-exp-item.js";
-import {EditIncExpItem} from "./components/edit-inc-exp-item.js";
+import {CreateOperation} from "./components/create-operation.js";
+import {EditOperation} from "./components/edit-operation.js";
 import {Categories} from "./components/categories.js";
 import {EditCategory} from "./components/edit-category.js";
 import {CreateCategory} from "./components/create-category.js";
@@ -59,7 +59,7 @@ export class Router {
                 }
             },
             {
-                route: '#/incoming-expenses',
+                route: '#/operations',
                 title: 'Доходы & расходы',
                 template: 'templates/operations.html',
                 load: () => {
@@ -99,19 +99,19 @@ export class Router {
                 }
             },
             {
-                route: '#/create-inc-exp-item',
+                route: '#/create-operation',
                 title: 'Создать доход/расход',
-                template: 'templates/create-inc-exp-item.html',
+                template: 'templates/create-operation.html',
                 load: () => {
-                    new CreateIncExpItem();
+                    new CreateOperation();
                 }
             },
             {
-                route: '#/edit-inc-exp-item',
+                route: '#/edit-operation',
                 title: 'Редактировать доход/расход',
-                template: 'templates/edit-inc-exp-item.html',
+                template: 'templates/edit-operation.html',
                 load: () => {
-                    new EditIncExpItem();
+                    new EditOperation();
                 }
             }
         ]

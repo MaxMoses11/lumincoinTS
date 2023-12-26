@@ -24,6 +24,10 @@ body {
     fill: white;
 }
 
+.btn svg {
+    pointer-events: none;
+}
+
 .active span{
     color: white;
 }

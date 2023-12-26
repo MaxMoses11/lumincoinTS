@@ -1,24 +1,30 @@
 import {RemoveActive} from "../utils/remove-active.js";
 import {Filter} from "../services/filter.js";
 import {HtmlBlocks} from "../config/html-blocks.js";
+import {CustomHttp} from "../services/custom-http";
+import {config} from "../config/config.js";
 
 export class Operations {
     operations = null;
-    tBodyElement = null;
+    operationId = null;
+
+    tBodyElement = document.getElementById('tbody');
     filterBtnElem = document.getElementById('filter-buttons');
     dateFromElem = document.getElementById('date-from');
     dateToElem = document.getElementById('date-to');
     intervalBtn = document.getElementById('interval');
+    createButtons = document.getElementById('create-buttons');
 
     constructor() {
         RemoveActive.remove();
         document.getElementById('operations').classList.add('active');
         document.getElementById('day').classList.add('active');
-        this.tBodyElement = document.getElementById('tbody');
 
         this.init();
 
         this.filterActions();
+
+        this.operationActions();
     }
 
     async init(period, dateFrom, dateTo) {
@@ -87,7 +93,10 @@ export class Operations {
             if (!target.classList.contains('btn') || target.id === 'interval') {
                 return;
             }
-            dateInputs.forEach(item => item.setAttribute('disabled', 'disabled'));
+            dateInputs.forEach(item => {
+                item.setAttribute('disabled', 'disabled');
+                item.value = '';
+            });
             Filter.activeBtnManager(this.filterBtnElem);
             target.classList.add('active');
             if (this.dateFromElem.value && this.dateToElem.value) {
@@ -110,5 +119,58 @@ export class Operations {
                 }
             }
         });
+    }
+
+    operationActions() {
+        this.tBodyElement.onclick = (e) => {
+            const target = e.target;
+
+            if (!target.classList.contains('edit-btn') && !target.classList.contains('remove-btn')) {
+                return;
+            }
+
+            this.operationId = target.parentElement.parentElement.parentElement.getAttribute('id').split('-')[1];
+
+            if (target.classList.contains('edit-btn')) {
+                location.href =  "#/edit-operation?operationId=" + this.operationId;
+            }
+        }
+
+        document.getElementById('success-remove').onclick = () => {
+            return this.deleteOperation(this.operationId);
+        }
+
+        this.createButtons.onclick = (e) => {
+            const target = e.target;
+
+            if (!target.classList.contains('btn')) {
+                return;
+            }
+
+            if (target.id === 'create-income-operation') {
+                location.href = "#/create-operation?operation=income";
+            } else {
+                location.href = "#/create-operation?operation=expense";
+            }
+        }
+    }
+
+    async deleteOperation(operationId) {
+        const result = await CustomHttp.request(config.host + 'operations/' + operationId, 'DELETE');
+
+        if (result && !result.error) {
+            const filterButtons = this.filterBtnElem.children;
+            for (let i = 0; i < filterButtons.length; i++) {
+                if (filterButtons[i].classList.contains('active')) {
+                    if (filterButtons[i].id === 'interval') {
+                        this.init('interval', this.dateFromElem.value, this.dateToElem.value);
+                    } else {
+                        this.init(filterButtons[i].id);
+                    }
+                }
+            }
+        } else {
+            throw new Error(result.error);
+        }
     }
 }

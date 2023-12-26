@@ -7,7 +7,7 @@ export class Categories {
     typeCategories = null;
     categoriesList = null;
     cardsElement = null;
-    static categoryId = null;
+    categoryId = null;
 
     constructor(type) {
         this.typeCategories = type;
@@ -25,12 +25,20 @@ export class Categories {
             if (!target.classList.contains('remove-category') && !target.classList.contains('edit-category')) {
                 return;
             }
-            Categories.categoryId = target.parentElement.parentElement.getAttribute('id').split('-')[1];
+            this.categoryId = target.parentElement.parentElement.getAttribute('id').split('-')[1];
+            if (target.classList.contains('edit-category')) {
+                if (this.typeCategories === 'income') {
+                    location.href = '#/edit-incoming?categoryId=' + this.categoryId;
+                } else {
+                    location.href = '#/edit-expenses?categoryId=' + this.categoryId;
+                }
+            }
         }
 
         document.getElementById('success-remove').onclick = () => {
-            return this.deleteCategory(Categories.categoryId);
+            return this.deleteCategory(this.categoryId);
         }
+
         this.init();
     }
 
@@ -61,15 +69,13 @@ export class Categories {
             cardBodyTitleElement.classList.add('card-title', 'text-primary-emphasis', 'fw-bold');
             cardBodyTitleElement.innerText = item.title;
 
-            const cardBodyEditElement = document.createElement('a');
+            const cardBodyEditElement = document.createElement('button');
             cardBodyEditElement.classList.add('btn', 'btn-primary', 'me-2', 'edit-category');
-            cardBodyEditElement.setAttribute('href', this.typeCategories === 'expense' ? '#/edit-expenses' : '#/edit-incoming');
             cardBodyEditElement.innerText = 'Редактировать';
 
-            const cardBodyRemoveElement = document.createElement('a');
+            const cardBodyRemoveElement = document.createElement('button');
             cardBodyRemoveElement.classList.add('btn', 'btn-danger', 'remove-category');
             cardBodyRemoveElement.innerText = 'Удалить';
-            cardBodyRemoveElement.setAttribute('href', '#');
             cardBodyRemoveElement.setAttribute('data-bs-toggle', 'modal');
             cardBodyRemoveElement.setAttribute('data-bs-target', '#staticBackdrop');
 
@@ -103,3 +109,5 @@ export class Categories {
         }
     }
 }
+// cardBodyEditElement.setAttribute('href',
+//     this.typeCategories === 'expense' ? '#/edit-expenses?categoryId=' + this.categoryId : '#/edit-incoming?categoryId=' + this.categoryId);

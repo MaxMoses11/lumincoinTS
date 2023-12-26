@@ -1,9 +1,9 @@
 <div class="container py-5 ps-5 ms-0">
     <div class="my-5 w-100">
         <h1 class="text-primary-emphasis fw-bold mb-5">Доходы и расходы</h1>
-        <div class="d-flex gap-2 mb-5">
-            <a href="#/create-inc-exp-item" type="button" class="btn btn-success">Создать доход</a>
-            <a href="#/create-inc-exp-item" type="button" class="btn btn-danger">Создать расход</a>
+        <div class="d-flex gap-2 mb-5" id="create-buttons">
+            <button id="create-income-operation" type="button" class="btn btn-success">Создать доход</button>
+            <button id="create-expense-operation" type="button" class="btn btn-danger">Создать расход</button>
         </div>
         <div class="row gap-4 px-3 my-5 align-items-center" id="filter-buttons">
             <button type="button" class="btn btn-outline-secondary col-1" id="day">Сегодня</button>
@@ -52,7 +52,7 @@
                 Вы действительно хотите удалить операцию?
             </div>
             <div class="modal-footer border-0 d-flex justify-content-center align-items-center gap-2 pb-5">
-                <button type="button" class="btn btn-success">Да, удалить</button>
+                <button type="button" class="btn btn-success" data-bs-dismiss="modal" id="success-remove">Да, удалить</button>
                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Не удалять</button>
             </div>
         </div>

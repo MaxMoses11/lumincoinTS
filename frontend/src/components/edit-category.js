@@ -1,15 +1,15 @@
 import {CustomHttp} from "../services/custom-http.js";
 import {config} from "../config/config.js";
-import {Categories} from "./categories.js";
+import {UrlManager} from "../utils/url-manager.js";
 
 export class EditCategory {
-    editCategoryId = Categories.categoryId;
     typeCategory = null;
     nameInput = null;
     editBtn = null;
     constructor(type) {
         this.typeCategory = type;
 
+        this.routeParams = UrlManager.getQueryParams();
         this.nameInput = document.getElementById('name-input');
         this.editBtn = document.getElementById('edit-btn');
 
@@ -21,8 +21,8 @@ export class EditCategory {
     }
 
     async init() {
-        if (this.editCategoryId) {
-            const result = await CustomHttp.request(config.host + 'categories/' + this.typeCategory + '/' + this.editCategoryId);
+        if (this.routeParams.categoryId) {
+            const result = await CustomHttp.request(config.host + 'categories/' + this.typeCategory + '/' + this.routeParams.categoryId);
 
             if (result && !result.error) {
                 this.nameInput.value = result.title;
@@ -33,7 +33,7 @@ export class EditCategory {
     }
 
     async editCategory() {
-        const result = await CustomHttp.request(config.host + 'categories/' + this.typeCategory + '/' + this.editCategoryId, 'PUT', {
+        const result = await CustomHttp.request(config.host + 'categories/' + this.typeCategory + '/' + this.routeParams.categoryId, 'PUT', {
             title: this.nameInput.value,
         });
 
