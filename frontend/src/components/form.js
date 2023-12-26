@@ -1,6 +1,7 @@
 import {CustomHttp} from "../services/custom-http";
 import {config} from "../config/config.js";
 import {Auth} from "../services/auth.js";
+import {CalcBalance} from "../services/calc-balance.js";
 
 export class Form {
     constructor(process) {

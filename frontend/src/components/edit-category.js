@@ -1,12 +1,14 @@
 import {CustomHttp} from "../services/custom-http.js";
 import {config} from "../config/config.js";
 import {UrlManager} from "../utils/url-manager.js";
+import {CalcBalance} from "../services/calc-balance";
 
 export class EditCategory {
     typeCategory = null;
     nameInput = null;
     editBtn = null;
     constructor(type) {
+
         this.typeCategory = type;
 
         this.routeParams = UrlManager.getQueryParams();
@@ -21,6 +23,7 @@ export class EditCategory {
     }
 
     async init() {
+        await CalcBalance.getBalance();
         if (this.routeParams.categoryId) {
             const result = await CustomHttp.request(config.host + 'categories/' + this.typeCategory + '/' + this.routeParams.categoryId);
 

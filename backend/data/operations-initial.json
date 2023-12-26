@@ -68,15 +68,5 @@
     "amount": 6000,
     "date": "2023-04-03",
     "comment": "Стоматолог"
-  },
-  {
-    "id": 8,
-    "user_id": 1,
-    "category_expense_id": 3,
-    "category_income_id": null,
-    "type": "expense",
-    "amount": 666,
-    "date": "2023-12-25",
-    "comment": "На похавать"
   }
 ]

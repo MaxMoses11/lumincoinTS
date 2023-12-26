@@ -45,6 +45,7 @@ export class Auth {
                 if(result && !result.error) {
                     Auth.removeTokens();
                     Auth.removeUserInfo();
+                    localStorage.clear();
                     return true;
                 }
             }

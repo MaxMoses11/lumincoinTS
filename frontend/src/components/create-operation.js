@@ -2,6 +2,7 @@ import {UrlManager} from "../utils/url-manager.js";
 import {EditOperation} from "./edit-operation.js";
 import {CustomHttp} from "../services/custom-http.js";
 import {config} from "../config/config.js";
+import {CalcBalance} from "../services/calc-balance.js";
 
 export class CreateOperation {
     categories = null;
@@ -13,6 +14,7 @@ export class CreateOperation {
     commentElem = document.getElementById('comment-input');
 
     constructor() {
+
         this.routeParams = UrlManager.getQueryParams();
 
         this.init();
@@ -29,6 +31,7 @@ export class CreateOperation {
     }
 
     async init() {
+        await CalcBalance.getBalance();
         for (let i = 0; i < this.typeElem.children.length; i++) {
             if (this.typeElem.children[i].value === this.routeParams.operation) {
                 this.typeElem.children[i].setAttribute('selected', 'selected');
@@ -40,20 +43,43 @@ export class CreateOperation {
     }
 
     async getForm() {
-        const result = await CustomHttp.request(config.host + 'operations', 'POST', {
-            type: this.typeElem.value,
-            amount: this.amountElem.value,
-            date: this.dateElem.value,
-            comment: this.commentElem.value,
-            category_id: Number(this.categoryElem.value)
-        });
+        if (CreateOperation.validForm()) {
+            const result = await CustomHttp.request(config.host + 'operations', 'POST', {
+                type: this.typeElem.value,
+                amount: this.amountElem.value,
+                date: this.dateElem.value,
+                comment: this.commentElem.value,
+                category_id: Number(this.categoryElem.value)
+            });
 
-        if (result) {
-            if (result.error) {
-                throw new Error(result.error);
+            if (result) {
+                if (result.error) {
+                    throw new Error(result.error);
+                }
+                // await CalcBalance.changeBalance(this.typeElem.value, this.amountElem.value);
+                location.href = '#/operations';
             }
-
-            location.href = '#/operations';
         }
+    }
+
+    static validForm() {
+        const formItems = document.getElementById('form').children;
+        let isValid = true;
+        for (let i = 0; i < formItems.length; i++) {
+            if (isValid) {
+                if (!formItems[i].value) {
+                    formItems[i].classList.add('border-danger', 'border-opacity-100');
+                    formItems[i].classList.remove('border-secondary', 'border-opacity-25');
+                    isValid = false;
+                } else {
+                    formItems[i].classList.remove('border-danger', 'border-opacity-100');
+                    formItems[i].classList.add('border-secondary', 'border-opacity-25');
+                    isValid = true;
+                }
+            } else {
+                break;
+            }
+        }
+        return isValid;
     }
 }

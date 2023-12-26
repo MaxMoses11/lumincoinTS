@@ -2,6 +2,7 @@ import {CustomHttp} from "../services/custom-http.js";
 import {config} from "../config/config.js";
 import {RemoveActive} from "../utils/remove-active.js";
 import {HtmlBlocks} from "../config/html-blocks.js";
+import {CalcBalance} from "../services/calc-balance";
 
 export class Categories {
     typeCategories = null;
@@ -12,6 +13,7 @@ export class Categories {
     constructor(type) {
         this.typeCategories = type;
         RemoveActive.remove();
+
         if (this.typeCategories === 'income') {
             document.getElementById('income').classList.add('active');
         } else {
@@ -43,6 +45,7 @@ export class Categories {
     }
 
     async init() {
+        await CalcBalance.getBalance();
         const result = await CustomHttp.request(config.host
                 + 'categories/' + this.typeCategories);
 

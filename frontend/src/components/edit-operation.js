@@ -1,6 +1,8 @@
 import {UrlManager} from "../utils/url-manager.js";
 import {CustomHttp} from "../services/custom-http.js";
 import {config} from "../config/config.js";
+import {CalcBalance} from "../services/calc-balance.js";
+import {CreateOperation} from "./create-operation.js";
 
 export class EditOperation {
     operation = null;
@@ -12,6 +14,7 @@ export class EditOperation {
     commentElem = document.getElementById('comment-input');
 
     constructor() {
+
         this.routeParams = UrlManager.getQueryParams();
 
         this.init();
@@ -24,6 +27,7 @@ export class EditOperation {
     }
 
     async init() {
+        await CalcBalance.getBalance();
         this.operation = await this.getOperation();
         if (this.operation) {
             for (let i = 0; i < this.typeElem.children.length; i++) {
@@ -40,7 +44,7 @@ export class EditOperation {
         EditOperation.fillCategorySelect(this.categories, this.categoryElem);
 
         document.getElementById('save-btn').onclick = () => {
-           return this.editOperation();
+            return this.editOperation();
         }
     }
 
@@ -75,23 +79,22 @@ export class EditOperation {
     }
 
     async editOperation() {
-        console.log(this.typeElem.value);
-        console.log(this.categoryElem.value);
+        if (CreateOperation.validForm()) {
+            const result = await CustomHttp.request(config.host + 'operations/' + this.routeParams.operationId, 'PUT', {
+                type: this.typeElem.value,
+                amount: this.amountElem.value,
+                date: this.dateElem.value,
+                comment: this.commentElem.value,
+                category_id: Number(this.categoryElem.value),
+            });
 
-        const result = await CustomHttp.request(config.host + 'operations/' + this.routeParams.operationId, 'PUT', {
-            type: this.typeElem.value,
-            amount: this.amountElem.value,
-            date: this.dateElem.value,
-            comment: this.commentElem.value,
-            category_id: Number(this.categoryElem.value),
-        });
+            if (result) {
+                if (result.error) {
+                    throw new Error(result.error);
+                }
 
-        if (result) {
-            if (result.error) {
-                throw new Error(result.error);
+                location.href = '#/operations'
             }
-
-            location.href = '#/operations'
         }
     }
 }

@@ -3,6 +3,7 @@ import {Filter} from "../services/filter.js";
 import {HtmlBlocks} from "../config/html-blocks.js";
 import {CustomHttp} from "../services/custom-http";
 import {config} from "../config/config.js";
+import {CalcBalance} from "../services/calc-balance";
 
 export class Operations {
     operations = null;
@@ -31,6 +32,7 @@ export class Operations {
         this.operations = await Filter.getOperations(period, dateFrom, dateTo);
         this.operations.sort((a, b) => a.id - b.id);
         this.buildOperationsTable();
+        await CalcBalance.getBalance();
     }
 
     buildOperationsTable() {
