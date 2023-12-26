@@ -1,0 +1,47 @@
+@font-face {
+    font-family: "Roboto-Regular";
+    src: url("/fonts/Roboto-Regular.ttf");
+}
+
+body {
+    font-family: "Roboto-Regular", sans-serif;
+}
+
+#block {
+    height: 450px;
+    border-right: 1px solid gray;
+}
+
+.menu-item {
+    font-size: 14px;
+}
+
+.nav-link:hover span {
+    color: white;
+}
+
+.btn:hover svg path {
+    fill: white;
+}
+
+.active span{
+    color: white;
+}
+
+.active svg path {
+    fill: white;
+}
+
+.active .arrow {
+    rotate: 90deg;
+}
+
+input[type='date']:in-range::-webkit-datetime-edit-year-field,
+input[type='date']:in-range::-webkit-datetime-edit-month-field,
+input[type='date']:in-range::-webkit-datetime-edit-day-field,
+input[type='date']:in-range::-webkit-datetime-edit-text{
+    color: transparent;
+}
+.new-card {
+    cursor: pointer;
+}
