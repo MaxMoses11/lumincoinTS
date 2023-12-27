@@ -1,9 +1,9 @@
 import {RemoveActive} from "../utils/remove-active.js";
 import {Filter} from "../services/filter.js";
 import {HtmlBlocks} from "../config/html-blocks.js";
-import {CustomHttp} from "../services/custom-http";
+import {CustomHttp} from "../services/custom-http.js";
 import {config} from "../config/config.js";
-import {CalcBalance} from "../services/calc-balance";
+import {CalcBalance} from "../services/calc-balance.js";
 
 export class Operations {
     operations = null;
