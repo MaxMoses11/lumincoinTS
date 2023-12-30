@@ -24,6 +24,10 @@ export class EditOperation {
             this.categories = await EditOperation.getCategories(this.typeElem.value);
             EditOperation.fillCategorySelect(this.categories, this.categoryElem);
         }
+
+        document.getElementById('cancel-btn').onclick = () => {
+            location.href = '#/operations';
+        }
     }
 
     async init() {

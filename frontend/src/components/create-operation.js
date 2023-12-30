@@ -28,6 +28,10 @@ export class CreateOperation {
         document.getElementById('save-btn').onclick = () => {
             return this.getForm()
         };
+
+        document.getElementById('cancel-btn').onclick = () => {
+            location.href = '#/operations';
+        }
     }
 
     async init() {

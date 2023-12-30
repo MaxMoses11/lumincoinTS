@@ -20,6 +20,14 @@ export class EditCategory {
         this.editBtn.onclick = () => {
             return this.editCategory();
         }
+
+        document.getElementById('cancel-btn').onclick = () => {
+            if (this.typeCategory === 'income') {
+                location.href = '#/incoming';
+            } else {
+                location.href = '#/expenses';
+            }
+        }
     }
 
     async init() {

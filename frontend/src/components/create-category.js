@@ -17,6 +17,15 @@ export class CreateCategory {
         this.createBtn.onclick = () => {
             return this.createCategory()
         };
+
+        document.getElementById('cancel-btn').onclick = () => {
+            if (this.typeCategory === 'income') {
+                location.href = '#/incoming';
+            } else {
+                location.href = '#/expenses';
+            }
+
+        }
     }
 
     async init() {
