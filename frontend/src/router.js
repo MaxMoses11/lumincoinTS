@@ -1,14 +1,12 @@
 import {Main} from "./components/main.js";
 import {Form} from "./components/form.js";
 import {Auth} from "./services/auth.js";
-import {CreateIncoming} from "./components/create-incoming.js";
-import {Incoming} from "./components/incoming.js";
-import {Expenses} from "./components/expenses.js";
-import {IncomingExpenses} from "./components/incoming-expenses.js";
-import {CreateExpenses} from "./components/create-expenses.js";
-import {EditIncoming} from "./components/edit-incoming.js";
-import {CreateIncExpItem} from "./components/create-inc-exp-item.js";
-import {EditIncExpItem} from "./components/edit-inc-exp-item.js";
+import {Operations} from "./components/operations.js";
+import {CreateOperation} from "./components/create-operation.js";
+import {EditOperation} from "./components/edit-operation.js";
+import {Categories} from "./components/categories.js";
+import {EditCategory} from "./components/edit-category.js";
+import {CreateCategory} from "./components/create-category.js";
 
 export class Router {
     constructor() {
@@ -49,7 +47,7 @@ export class Router {
                 title: 'Категории доходов',
                 template: 'templates/incoming.html',
                 load: () => {
-                    new Incoming();
+                    new Categories('income');
                 }
             },
             {
@@ -57,15 +55,15 @@ export class Router {
                 title: 'Категории расходов',
                 template: 'templates/expenses.html',
                 load: () => {
-                    new Expenses();
+                    new Categories('expense');
                 }
             },
             {
-                route: '#/incoming-expenses',
+                route: '#/operations',
                 title: 'Доходы & расходы',
-                template: 'templates/incoming-expenses.html',
+                template: 'templates/operations.html',
                 load: () => {
-                    new IncomingExpenses();
+                    new Operations();
                 }
             },
             {
@@ -73,7 +71,7 @@ export class Router {
                 title: 'Создать категорию доходов',
                 template: 'templates/create-incoming.html',
                 load: () => {
-                    new CreateIncoming();
+                    new CreateCategory('income');
                 }
             },
             {
@@ -81,7 +79,7 @@ export class Router {
                 title: 'Создать категорию расходов',
                 template: 'templates/create-expenses.html',
                 load: () => {
-                    new CreateExpenses();
+                    new CreateCategory('expense');
                 }
             },
             {
@@ -89,7 +87,7 @@ export class Router {
                 title: 'Редактировать категорию доходов',
                 template: 'templates/edit-incoming.html',
                 load: () => {
-                    new EditIncoming();
+                    new EditCategory('income');
                 }
             },
             {
@@ -97,23 +95,23 @@ export class Router {
                 title: 'Редактировать категорию расходов',
                 template: 'templates/edit-expenses.html',
                 load: () => {
-                    new EditIncoming();
+                    new EditCategory('expense');
                 }
             },
             {
-                route: '#/create-inc-exp-item',
+                route: '#/create-operation',
                 title: 'Создать доход/расход',
-                template: 'templates/create-inc-exp-item.html',
+                template: 'templates/create-operation.html',
                 load: () => {
-                    new CreateIncExpItem();
+                    new CreateOperation();
                 }
             },
             {
-                route: '#/edit-inc-exp-item',
+                route: '#/edit-operation',
                 title: 'Редактировать доход/расход',
-                template: 'templates/edit-inc-exp-item.html',
+                template: 'templates/edit-operation.html',
                 load: () => {
-                    new EditIncExpItem();
+                    new EditOperation();
                 }
             }
         ]

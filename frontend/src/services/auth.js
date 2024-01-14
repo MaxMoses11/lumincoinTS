@@ -18,7 +18,7 @@ export class Auth {
             if(response && response.status === 200) {
                 const result = await response.json()
                 if(result && !result.error) {
-                    this.setTokens(result.accessToken, result.refreshToken);
+                    this.setTokens(result.tokens.accessToken, result.tokens.refreshToken);
                     return true;
                 }
             }
@@ -45,6 +45,7 @@ export class Auth {
                 if(result && !result.error) {
                     Auth.removeTokens();
                     Auth.removeUserInfo();
+                    localStorage.clear();
                     return true;
                 }
             }

@@ -1,0 +1,60 @@
+<div class="container py-5 ps-5 ms-0">
+    <div class="my-5 w-100">
+        <h1 class="text-primary-emphasis fw-bold mb-5">Доходы и расходы</h1>
+        <div class="d-flex gap-2 mb-5" id="create-buttons">
+            <button id="create-income-operation" type="button" class="btn btn-success">Создать доход</button>
+            <button id="create-expense-operation" type="button" class="btn btn-danger">Создать расход</button>
+        </div>
+        <div class="row gap-4 px-3 my-5 align-items-center" id="filter-buttons">
+            <button type="button" class="btn btn-outline-secondary col-1" id="day">Сегодня</button>
+            <button type="button" class="btn btn-outline-secondary col-1" id="week">Неделя</button>
+            <button type="button" class="btn btn-outline-secondary col-1" id="month">Месяц</button>
+            <button type="button" class="btn btn-outline-secondary col-1" id="year">Год</button>
+            <button type="button" class="btn btn-outline-secondary col-1" id="all">Все</button>
+            <button type="button" class="btn btn-outline-secondary col-1 px-0" id="interval">Интервал</button>
+            <div class="col-4 d-flex">
+                <div class="">
+                    <label for="date-from" class="me-2">с</label>
+                    <input type="date" id="date-from" disabled
+                           class="border-0 w-75 text-secondary text-decoration-underline fs-6">
+                </div>
+                <div class="">
+                    <label for="date-to" class="me-2">по</label>
+                    <input type="date" id="date-to" disabled
+                           class="border-0 w-75 me-1 text-secondary text-decoration-underline fs-6">
+                </div>
+            </div>
+        </div>
+    </div>
+    <table class="table table-hover text-center">
+        <thead>
+        <tr>
+            <th scope="col" class="text-primary-emphasis">№ операции</th>
+            <th scope="col" class="text-primary-emphasis">Тип</th>
+            <th scope="col" class="text-primary-emphasis">Категория</th>
+            <th scope="col" class="text-primary-emphasis">Сумма</th>
+            <th scope="col" class="text-primary-emphasis">Дата</th>
+            <th scope="col" class="text-primary-emphasis">Комментарий</th>
+            <th scope="col" class="text-primary-emphasis"></th>
+        </tr>
+        </thead>
+        <tbody id="tbody">
+
+        </tbody>
+    </table>
+</div>
+
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body d-flex justify-content-center align-items-center text-center fw-bold fs-5 pt-5 px-4 pb-0">
+                Вы действительно хотите удалить операцию?
+            </div>
+            <div class="modal-footer border-0 d-flex justify-content-center align-items-center gap-2 pb-5">
+                <button type="button" class="btn btn-success" data-bs-dismiss="modal" id="success-remove">Да, удалить</button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Не удалять</button>
+            </div>
+        </div>
+    </div>
+</div>
