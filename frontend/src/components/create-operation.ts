@@ -1,8 +1,8 @@
-import {UrlManager} from "../utils/url-manager.js";
-import {EditOperation} from "./edit-operation.js";
-import {CustomHttp} from "../services/custom-http.js";
-import {config} from "../config/config.js";
-import {CalcBalance} from "../services/calc-balance.js";
+import {UrlManager} from "../utils/url-manager.ts";
+import {EditOperation} from "./edit-operation";
+import {CustomHttp} from "../services/custom-http.ts";
+import {config} from "../../config/config.ts";
+import {CalcBalance} from "../services/calc-balance.ts";
 
 export class CreateOperation {
     categories = null;

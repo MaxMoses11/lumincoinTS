@@ -1,4 +1,4 @@
-import {Router} from "./router.js";
+import {Router} from "./router.ts";
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 

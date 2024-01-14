@@ -1,5 +1,5 @@
-import {CustomHttp} from "../services/custom-http.js";
-import {config} from "../config/config.js";
+import {CustomHttp} from "../services/custom-http.ts";
+import {config} from "../../config/config.ts";
 import {CalcBalance} from "../services/calc-balance";
 
 export class CreateCategory {

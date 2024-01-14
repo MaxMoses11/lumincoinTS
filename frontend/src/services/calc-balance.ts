@@ -1,5 +1,5 @@
-import {CustomHttp} from "./custom-http.js";
-import {config} from "../config/config.js";
+import {CustomHttp} from "./custom-http";
+import {config} from "../../config/config";
 
 export class CalcBalance {
     static balanceElement = document.getElementById('balance');

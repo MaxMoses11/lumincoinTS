@@ -1,7 +1,7 @@
 import Chart from 'chart.js/auto';
-import {RemoveActive} from "../utils/remove-active.js";
-import {CalcBalance} from "../services/calc-balance.js";
-import {Filter} from "../services/filter.js";
+import {RemoveActive} from "../utils/remove-active.ts";
+import {CalcBalance} from "../services/calc-balance.ts";
+import {Filter} from "../services/filter.ts";
 
 export class Main {
     operationsArray = null;

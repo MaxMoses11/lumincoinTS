@@ -1,8 +1,8 @@
-import {CustomHttp} from "../services/custom-http.js";
-import {config} from "../config/config.js";
-import {RemoveActive} from "../utils/remove-active.js";
-import {HtmlBlocks} from "../config/html-blocks.js";
-import {CalcBalance} from "../services/calc-balance.js";
+import {CustomHttp} from "../services/custom-http.ts";
+import {config} from "../../config/config.ts";
+import {RemoveActive} from "../utils/remove-active.ts";
+import {HtmlBlocks} from "../utils/html-blocks.ts";
+import {CalcBalance} from "../services/calc-balance.ts";
 
 export class Categories {
     typeCategories = null;

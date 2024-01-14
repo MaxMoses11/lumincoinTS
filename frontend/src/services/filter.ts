@@ -1,5 +1,5 @@
-import {CustomHttp} from "./custom-http.js";
-import {config} from "../config/config.js";
+import {CustomHttp} from "./custom-http.ts";
+import {config} from "../../config/config";
 
 export class Filter {
     static async getOperations(period = null, dateFrom = null, dateTo = null) {

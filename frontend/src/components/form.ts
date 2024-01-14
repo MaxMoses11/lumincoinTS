@@ -1,7 +1,7 @@
 import {CustomHttp} from "../services/custom-http";
-import {config} from "../config/config.js";
-import {Auth} from "../services/auth.js";
-import {CalcBalance} from "../services/calc-balance.js";
+import {config} from "../../config/config.ts";
+import {Auth} from "../services/auth.ts";
+import {CalcBalance} from "../services/calc-balance.ts";
 
 export class Form {
     constructor(process) {

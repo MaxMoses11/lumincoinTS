@@ -1,6 +1,6 @@
-import {CustomHttp} from "../services/custom-http.js";
-import {config} from "../config/config.js";
-import {UrlManager} from "../utils/url-manager.js";
+import {CustomHttp} from "../services/custom-http.ts";
+import {config} from "../../config/config.ts";
+import {UrlManager} from "../utils/url-manager.ts";
 import {CalcBalance} from "../services/calc-balance";
 
 export class EditCategory {

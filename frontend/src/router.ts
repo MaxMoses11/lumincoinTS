@@ -1,20 +1,24 @@
-import {Main} from "./components/main.js";
-import {Form} from "./components/form.js";
-import {Auth} from "./services/auth.js";
-import {Operations} from "./components/operations.js";
-import {CreateOperation} from "./components/create-operation.js";
-import {EditOperation} from "./components/edit-operation.js";
-import {Categories} from "./components/categories.js";
-import {EditCategory} from "./components/edit-category.js";
-import {CreateCategory} from "./components/create-category.js";
+import {Main} from "./components/main";
+import {Form} from "./components/form";
+import {Auth} from "./services/auth";
+import {Operations} from "./components/operations";
+import {CreateOperation} from "./components/create-operation";
+import {EditOperation} from "./components/edit-operation";
+import {Categories} from "./components/categories";
+import {EditCategory} from "./components/edit-category";
+import {CreateCategory} from "./components/create-category";
+import {RouteType} from "./types/route.type";
 
 export class Router {
+    private contentElement: HTMLElement | null = null;
+    private titleElement: HTMLElement | null = null;
+    private sidebarElement: HTMLElement | null = null;
+    private profileFullNameElement: HTMLElement | null = null;
+    private routes: Array<RouteType> = [];
     constructor() {
         this.contentElement = document.getElementById('content');
-        this.balanceElement = document.getElementById('balance');
         this.titleElement = document.getElementById('page-title');
         this.sidebarElement = document.getElementById('sidebar');
-        this.profileElement = document.getElementById('profile');
         this.profileFullNameElement = document.getElementById('profile-full-name');
 
         this.routes = [
@@ -117,15 +121,15 @@ export class Router {
         ]
     }
 
-    async openRoute() {
-        const urlRoute = window.location.hash.split('?')[0];
+    public async openRoute(): Promise<void> {
+        const urlRoute: string = window.location.hash.split('?')[0];
         if (urlRoute === '#/logout') {
             await Auth.logout();
             window.location.href = '#/login';
             return;
         }
 
-        const newRoute = this.routes.find(item => {
+        const newRoute: RouteType | undefined = this.routes.find((item: RouteType) => {
             return item.route === urlRoute;
         });
 
@@ -134,18 +138,25 @@ export class Router {
             return;
         }
 
-        this.contentElement.innerHTML = await fetch(newRoute.template).then(response => response.text());
-        this.titleElement.innerText = newRoute.title;
+        if (this.contentElement) {
+            this.contentElement.innerHTML = await fetch(newRoute.template).then(response => response.text());
+        }
+        if (this.titleElement) {
+            this.titleElement.innerText = newRoute.title;
+        }
 
-        const userName = `${localStorage.getItem('name')} ${localStorage.getItem('lastName')}`;
-        const accessToken = localStorage.getItem(Auth.accessTokenKey);
-        if (userName && accessToken) {
-            this.sidebarElement.classList.remove('d-none');
-            this.sidebarElement.classList.add('d-flex');
-            this.profileFullNameElement.innerText = userName;
-        } else {
-            this.sidebarElement.classList.remove('d-flex');
-            this.sidebarElement.classList.add('d-none');
+        const userName: string = `${localStorage.getItem('name')} ${localStorage.getItem('lastName')}`;
+        const accessToken: string | null = localStorage.getItem(Auth.accessTokenKey);
+
+        if (this.sidebarElement && this.profileFullNameElement) {
+            if (userName && accessToken) {
+                this.sidebarElement.classList.remove('d-none');
+                this.sidebarElement.classList.add('d-flex');
+                this.profileFullNameElement.innerText = userName;
+            } else {
+                this.sidebarElement.classList.remove('d-flex');
+                this.sidebarElement.classList.add('d-none');
+            }
         }
 
         newRoute.load();
