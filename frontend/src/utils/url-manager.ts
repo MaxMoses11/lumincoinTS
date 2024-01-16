@@ -1,11 +1,13 @@
+import {QueryParamsType} from "../types/query-params.type";
+
 export class UrlManager {
 
-    static getQueryParams() {
+    public static getQueryParams(): QueryParamsType {
         const qs = document.location.href.split('+').join(' ');
 
-        let params = {},
-            tokens,
-            re = /[?&]([^=]+)=([^&]*)/g;
+        let params: QueryParamsType = {},
+            tokens: RegExpExecArray | null,
+            re: RegExp = /[?&]([^=]+)=([^&]*)/g;
 
         while (tokens = re.exec(qs)) {
             params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);

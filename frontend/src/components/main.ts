@@ -1,37 +1,42 @@
-import Chart from 'chart.js/auto';
-import {RemoveActive} from "../utils/remove-active.ts";
-import {CalcBalance} from "../services/calc-balance.ts";
-import {Filter} from "../services/filter.ts";
+import Chart, {ChartItem} from 'chart.js/auto';
+import {RemoveActive} from "../utils/remove-active";
+import {CalcBalance} from "../services/calc-balance";
+import {Filter} from "../services/filter";
+import {OperationResponseType} from "../types/operation-response.type";
 
 export class Main {
-    operationsArray = null;
-    incomeChart = null;
-    expenseChart = null;
+    private incomeChart: Chart | undefined;
+    private expenseChart: Chart | undefined;
 
-    filterElement = document.getElementById('filter-buttons');
-    dateFromElem = document.getElementById('date-from');
-    dateToElem = document.getElementById('date-to');
-    intervalBtn = document.getElementById('interval');
-    incomePie = document.getElementById('pie1');
-    expensePie = document.getElementById('pie2');
+    private filterElement: HTMLElement | null = document.getElementById('filter-buttons');
+    private dateFromElem: HTMLInputElement | null = document.getElementById('date-from') as HTMLInputElement;
+    private dateToElem: HTMLInputElement | null = document.getElementById('date-to') as HTMLInputElement;
+    private intervalBtn: HTMLElement | null = document.getElementById('interval');
+    private incomePie: ChartItem = document.getElementById('pie1') as HTMLCanvasElement;
+    private expensePie: ChartItem = document.getElementById('pie2') as HTMLCanvasElement;
 
     constructor() {
         RemoveActive.remove();
-        document.getElementById('main').classList.add('active');
+        const mainElement: HTMLElement | null = document.getElementById('main');
+        if (mainElement) {
+            mainElement.classList.add('active');
+        }
 
         this.init();
 
         this.filterActions();
     }
 
-    async init(period, dateFrom, dateTo) {
+    private async init(period?: string, dateFrom?: string, dateTo?: string): Promise<void> {
         if (period) {
-            this.incomeChart.destroy();
-            this.expenseChart.destroy();
+            if (this.incomeChart && this.expenseChart) {
+                this.incomeChart.destroy();
+                this.expenseChart.destroy();
+            }
         }
         await CalcBalance.getBalance();
 
-        const color = [
+        const color: string[] = [
             '#DC3545', '#20C997', '#FD7E14', '#54729d', '#FFC107',
             '#052c67', '#6507c9', '#c907a9', '#0755c9', '#0dfd19',
             '#FF6633', '#FFB399', '#FF33FF', '#FFFF99', '#00B3E6',
@@ -46,7 +51,7 @@ export class Main {
             '#E64D66', '#4DB380', '#FF4D4D', '#99E6E6', '#6666FF'
         ]
 
-        let optionIncomeChart = {
+        let optionIncomeChart: any = {
             type: 'pie',
             data: {
                 labels: [],
@@ -58,7 +63,7 @@ export class Main {
             }
         }
 
-        let optionExpenseChart = {
+        let optionExpenseChart: any = {
             type: 'pie',
             data: {
                 labels: [],
@@ -71,15 +76,15 @@ export class Main {
         }
 
         try {
-            this.operationsArray = await Filter.getOperations(period, dateFrom, dateTo);
+            const operationsArray: OperationResponseType[] | undefined = await Filter.getOperations(period, dateFrom, dateTo);
 
-            if (this.operationsArray) {
-                let incomeArray = this.operationsArray.filter(item => item.type === 'income');
-                let expenseArray = this.operationsArray.filter(item => item.type === 'expense');
+            if (operationsArray) {
+                const incomeArray: OperationResponseType[] = operationsArray.filter(item => item.type === 'income');
+                const expenseArray: OperationResponseType[] = operationsArray.filter(item => item.type === 'expense');
 
                 for (let i = 0; i < incomeArray.length; i++) {
                     if (Object.keys(incomeArray[i]).includes('category')) {
-                        let index = optionIncomeChart.data.labels.indexOf(incomeArray[i].category);
+                        let index: number = optionIncomeChart.data.labels.indexOf(incomeArray[i].category);
                         if (index !== -1) {
                             optionIncomeChart.data.datasets[0].data.splice(index, 1, optionIncomeChart.data.datasets[0].data[index] + incomeArray[i].amount);
                         } else {
@@ -92,7 +97,7 @@ export class Main {
 
                 for (let i = 0; i < expenseArray.length; i++) {
                     if (Object.keys(expenseArray[i]).includes('category')) {
-                        let index = optionExpenseChart.data.labels.indexOf(expenseArray[i].category);
+                        let index: number = optionExpenseChart.data.labels.indexOf(expenseArray[i].category);
                         if (index !== -1) {
                             optionExpenseChart.data.datasets[0].data.splice(index, 1, optionExpenseChart.data.datasets[0].data[index] + expenseArray[i].amount);
                         } else {
@@ -111,40 +116,44 @@ export class Main {
         this.expenseChart = new Chart(this.expensePie, optionExpenseChart);
     }
 
-    filterActions() {
-        const dateInputs = [
+    private filterActions(): void {
+        if (!this.filterElement) return;
+        const dateInputs: (HTMLInputElement | null)[] = [
             this.dateFromElem,
             this.dateToElem
         ];
 
-        this.filterElement.onclick = (event) => {
-            let target = event.target;
+        this.filterElement.onclick = (event): void => {
+            let target: any = event.target;
 
             if (!target.classList.contains('btn') || target.id === 'interval') {
                 return;
             }
             dateInputs.forEach(item => {
-                item.setAttribute('disabled', 'disabled');
-                item.value = '';
+                (item as HTMLInputElement).setAttribute('disabled', 'disabled');
+                (item as HTMLInputElement).value = '';
             });
             Filter.activeBtnManager(this.filterElement);
             target.classList.add('active');
-            if (this.dateFromElem.value && this.dateToElem.value) {
+            if (this.dateFromElem && this.dateToElem && this.dateFromElem.value && this.dateToElem.value) {
                 this.init(target.id, this.dateFromElem.value, this.dateToElem.value);
             } else {
                 this.init(target.id);
             }
         }
 
-        this.intervalBtn.onclick = (e) => {
-            Filter.activeBtnManager(this.filterElement);
-            dateInputs.forEach(item => item.removeAttribute('disabled'));
-            e.target.classList.add('active');
+        if (this.intervalBtn) {
+            this.intervalBtn.onclick = (e) => {
+                const target: any = e.target;
+                Filter.activeBtnManager(this.filterElement);
+                dateInputs.forEach(item => (item as HTMLInputElement).removeAttribute('disabled'));
+                target.classList.add('active');
+            }
         }
 
         dateInputs.forEach(item => {
-            item.onchange = () => {
-                if (this.dateFromElem.value && this.dateToElem.value) {
+            (item as HTMLInputElement).onchange = () => {
+                if (this.dateFromElem && this.dateToElem && this.dateFromElem.value && this.dateToElem.value) {
                     this.init('interval', this.dateFromElem.value, this.dateToElem.value);
                 }
             }

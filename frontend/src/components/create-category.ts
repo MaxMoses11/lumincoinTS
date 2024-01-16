@@ -1,46 +1,55 @@
-import {CustomHttp} from "../services/custom-http.ts";
-import {config} from "../../config/config.ts";
+import {CustomHttp} from "../services/custom-http";
+import {config} from "../../config/config";
 import {CalcBalance} from "../services/calc-balance";
+import {CategoriesResponseType} from "../types/categories-response.type";
+import {DefaultResponseType} from "../types/default-response.type";
 
 export class CreateCategory {
-    typeCategory = null;
-    nameInput = null;
-    createBtn = null;
+    readonly typeCategory: string;
+    readonly nameInput: HTMLInputElement | null = null;
+    readonly createBtn: HTMLElement | null = null;
 
-    constructor(type) {
+    constructor(type: string) {
 
         this.typeCategory = type;
 
-        this.nameInput = document.getElementById('name-input');
+        this.nameInput = document.getElementById('name-input') as HTMLInputElement;
         this.createBtn = document.getElementById('create-btn');
         this.init();
-        this.createBtn.onclick = () => {
-            return this.createCategory()
-        };
 
-        document.getElementById('cancel-btn').onclick = () => {
-            if (this.typeCategory === 'income') {
-                location.href = '#/incoming';
-            } else {
-                location.href = '#/expenses';
+        if (this.createBtn) {
+            this.createBtn.onclick = () => {
+                return this.createCategory()
+            };
+        }
+
+        const cancelBtnElement: HTMLElement | null = document.getElementById('cancel-btn');
+        if (cancelBtnElement) {
+            cancelBtnElement.onclick = (): void => {
+                if (this.typeCategory === 'income') {
+                    location.href = '#/incoming';
+                } else {
+                    location.href = '#/expenses';
+                }
             }
-
         }
     }
 
-    async init() {
+    private async init(): Promise<void> {
         await CalcBalance.getBalance();
     }
 
-    async createCategory() {
-        const result = await CustomHttp.request(config.host + 'categories/' + this.typeCategory, 'POST', {
+    private async createCategory(): Promise<void> {
+        if (!this.nameInput) return;
+        const result: CategoriesResponseType | DefaultResponseType = await CustomHttp.request(config.host + 'categories/' + this.typeCategory, 'POST', {
             title: this.nameInput.value,
         });
 
-        if (result && !result.error) {
+        if (result) {
+            if ((result as DefaultResponseType).error !== undefined) {
+                throw new Error((result as DefaultResponseType).message);
+            }
             location.href = this.typeCategory === 'expense' ? '#/expenses' : '#/incoming';
-        } else {
-            throw new Error(result.error);
         }
     }
 }

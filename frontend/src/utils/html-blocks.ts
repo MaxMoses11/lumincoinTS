@@ -1,5 +1,5 @@
 export class HtmlBlocks {
-    static icons = "<div class=\"d-flex gap-2 justify-content-center\">\n" +
+    public static icons: string = "<div class=\"d-flex gap-2 justify-content-center\">\n" +
         "                    <button class=\"btn p-0 remove-btn\" data-bs-toggle=\"modal\" data-bs-target=\"#staticBackdrop\">\n" +
         "                        <svg width=\"14\" height=\"15\" viewBox=\"0 0 14 15\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n" +
         "                            <path d=\"M4.5 5.5C4.77614 5.5 5 5.72386 5 6V12C5 12.2761 4.77614 12.5 4.5 12.5C4.22386 12.5 4 12.2761 4 12V6C4 5.72386 4.22386 5.5 4.5 5.5Z\"\n" +
@@ -19,9 +19,9 @@ export class HtmlBlocks {
         "                                  fill=\"black\"/>\n" +
         "                        </svg>\n" +
         "                    </button>\n" +
-        "                </div>"
+        "                </div>";
 
-    static cardElement =
+    public static cardElement: string =
         '<div class="card-body d-flex justify-content-center align-items-center p-5">\n' +
         '<div>\n' +
         '<svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">\n' +

@@ -1,16 +1,23 @@
 import {CustomHttp} from "../services/custom-http";
-import {config} from "../../config/config.ts";
-import {Auth} from "../services/auth.ts";
-import {CalcBalance} from "../services/calc-balance.ts";
+import {config} from "../../config/config";
+import {Auth} from "../services/auth";
+import {FormFieldType} from "../types/form-field.type";
+import {DefaultResponseType} from "../types/default-response.type";
+import {SignupResponseType} from "../types/signup-response.type";
+import {LoginResponseType} from "../types/login-response.type";
 
 export class Form {
-    constructor(process) {
-        this.process = process;
-        this.passwordElement = null;
-        this.repeatPasswordElement = null;
+    readonly process: string;
+    private passwordElement: FormFieldType | undefined;
+    private repeatPasswordElement: FormFieldType | undefined
+    private rememberElement: HTMLInputElement | null;
+    private fields: FormFieldType[] = [];
+
+    constructor(type: string) {
+        this.process = type;
         this.rememberElement = null;
 
-        const accessToken = localStorage.getItem(Auth.accessTokenKey);
+        const accessToken: string | null = localStorage.getItem(Auth.accessTokenKey);
         if (accessToken) {
             location.href = '#/main';
             return;
@@ -50,27 +57,33 @@ export class Form {
                 });
         }
 
-        let that = this;
-        document.getElementById('button').onclick = () => {
-            const validateData = that.validateForm();
-            if (validateData) {
-                that.processForm();
+        let that: Form = this;
+        const buttonElement: HTMLElement | null = document.getElementById('button');
+        if (buttonElement) {
+            buttonElement.onclick = (): void => {
+                const validateData: boolean = that.validateForm();
+                if (validateData) {
+                    that.processForm();
+                }
             }
         }
     }
 
-    validateForm() {
-        let hasError = false;
-        this.fields.forEach(item => {
-            item.element = document.getElementById(item.id);
+    validateForm(): boolean {
+        let hasError: boolean = false;
+        this.fields.forEach((item: FormFieldType): void => {
+            item.element = document.getElementById(item.id) as HTMLInputElement;
+            if (!item.element) return;
             if (!item.element.value || !item.element.value.match(item.regex)) {
-                item.element.parentNode.classList.add("border-danger");
-                item.element.parentNode.classList.remove("border-white");
+                const itemParent: HTMLElement | null = (item.element as HTMLInputElement).parentElement;
+                (itemParent as HTMLElement).classList.add("border-danger");
+                (itemParent as HTMLElement).classList.remove("border-white");
                 item.valid = false;
                 hasError = true;
             } else {
-                item.element.parentNode.classList.add("border-white");
-                item.element.parentNode.classList.remove("border-danger");
+                const itemParent: HTMLElement | null = (item.element as HTMLInputElement).parentElement;
+                (itemParent as HTMLElement).classList.add("border-white");
+                (itemParent as HTMLElement).classList.remove("border-danger");
                 item.valid = true;
             }
         });
@@ -81,79 +94,102 @@ export class Form {
 
             this.repeatPasswordElement = this.fields.find(item => item.name === 'repeat-password');
 
-            if (!this.passwordElement.element.value || !this.repeatPasswordElement.element.value
-                || this.passwordElement.element.value !== this.repeatPasswordElement.element.value
-                || !this.passwordElement.valid || !this.repeatPasswordElement.valid) {
-                this.passwordElement.element.parentNode.classList.add("border-danger");
-                this.passwordElement.element.parentNode.classList.remove("border-white");
-                this.repeatPasswordElement.element.parentNode.classList.add("border-danger");
-                this.repeatPasswordElement.element.parentNode.classList.remove("border-white");
-                this.passwordElement.valid = false;
-                this.repeatPasswordElement.valid = false;
-                hasError = true;
-            } else {
-                this.passwordElement.element.parentNode.classList.remove("border-danger");
-                this.passwordElement.element.parentNode.classList.add("border-white");
-                this.repeatPasswordElement.element.parentNode.classList.remove("border-danger");
-                this.repeatPasswordElement.element.parentNode.classList.add("border-white");
-                this.passwordElement.valid = true;
-                this.repeatPasswordElement.valid = true;
+            if (this.passwordElement && this.passwordElement.element
+                && this.repeatPasswordElement && this.repeatPasswordElement.element) {
+
+                const passwordParentElement: HTMLElement | null = this.passwordElement.element.parentElement;
+                const repeatPasswordParentElement: HTMLElement | null = this.repeatPasswordElement.element.parentElement;
+
+                if (passwordParentElement && repeatPasswordParentElement) {
+
+                    if (!this.passwordElement.element.value || !this.repeatPasswordElement.element.value
+                        || this.passwordElement.element.value !== this.repeatPasswordElement.element.value
+                        || !this.passwordElement.valid || !this.repeatPasswordElement.valid) {
+
+                        passwordParentElement.classList.add("border-danger");
+                        passwordParentElement.classList.remove("border-white");
+                        repeatPasswordParentElement.classList.add("border-danger");
+                        repeatPasswordParentElement.classList.remove("border-white");
+                        this.passwordElement.valid = false;
+                        this.repeatPasswordElement.valid = false;
+                        hasError = true;
+
+                    } else {
+
+                        passwordParentElement.classList.remove("border-danger");
+                        passwordParentElement.classList.add("border-white");
+                        repeatPasswordParentElement.classList.remove("border-danger");
+                        repeatPasswordParentElement.classList.add("border-white");
+                        this.passwordElement.valid = true;
+                        this.repeatPasswordElement.valid = true;
+
+                    }
+                }
             }
         }
-        if (!hasError) {
-            return true;
-        }
+        return !hasError;
     }
 
-    async processForm() {
-        const email = this.fields.find(item => item.name === 'email').element.value;
-        const password = this.passwordElement.element.value;
+    private async processForm(): Promise<void> {
+        const emailElement: FormFieldType | undefined = this.fields.find(item => (item as FormFieldType).name === 'email');
+        if (!emailElement || !emailElement.element) return;
+        const email: string = emailElement.element.value;
+
+        const password: string = ((this.passwordElement as FormFieldType).element as HTMLInputElement).value;
 
         if (this.process === 'signup') {
             try {
-                const username = this.fields.find(item => item.name === 'username').element.value;
-                const [firstName, lastName] = username.split(' ');
+                const userNameElement: FormFieldType | undefined = this.fields.find(item => item.name === 'username');
+                if (!userNameElement || !userNameElement.element) return;
+                const username: string = userNameElement.element.value;
 
-                const result = await CustomHttp.request(config.host + 'signup', 'POST', {
+                const repeatPasswordElement: FormFieldType | undefined = this.fields.find(item => item.name === 'repeat-password');
+                if (!repeatPasswordElement || !repeatPasswordElement.element) return;
+                const repeatPassword: string = repeatPasswordElement.element.value;
+
+                const [firstName, lastName]: string[] = username.split(' ');
+
+                const result: DefaultResponseType | SignupResponseType = await CustomHttp.request(config.host + 'signup', 'POST', {
                     name: firstName,
                     lastName: lastName,
                     email: email,
                     password: password,
-                    passwordRepeat: this.fields.find(item => item.name === 'repeat-password').element.value,
+                    passwordRepeat: repeatPassword,
                 });
 
                 if (result) {
-                    if (result.error || !result.user) {
-                        throw new Error(result.message);
+                    if ((result as DefaultResponseType).error !== undefined) {
+                        throw new Error((result as DefaultResponseType).message);
                     }
                 }
             } catch (e) {
                 console.log(e);
+                return;
             }
         }
 
         try {
-            let rememberMe;
-            this.rememberElement = document.getElementById('flexCheckDefault');
+            let rememberMe: boolean;
+            this.rememberElement = document.getElementById('flexCheckDefault') as HTMLInputElement;
             if (this.rememberElement) {
                 rememberMe = this.rememberElement.checked;
             } else {
                 rememberMe = false;
             }
 
-            const result = await CustomHttp.request(config.host + 'login', 'POST', {
+            const result: DefaultResponseType | LoginResponseType = await CustomHttp.request(config.host + 'login', 'POST', {
                 email: email,
                 password: password,
                 rememberMe: rememberMe,
             });
 
             if (result) {
-                if (result.error || !result.user) {
-                    throw new Error(result.message);
+                if ((result as DefaultResponseType).error !== undefined) {
+                    throw new Error((result as DefaultResponseType).message);
                 }
 
-                Auth.setTokens(result.tokens.accessToken, result.tokens.refreshToken);
-                Auth.setUserInfo(result.user.name, result.user.lastName, email);
+                Auth.setTokens((result as LoginResponseType).tokens.accessToken, (result as LoginResponseType).tokens.refreshToken);
+                Auth.setUserInfo((result as LoginResponseType).user.name, (result as LoginResponseType).user.lastName, email);
                 location.href = '/#/main';
             }
         } catch (e) {

@@ -1,25 +1,35 @@
-import {RemoveActive} from "../utils/remove-active.ts";
-import {Filter} from "../services/filter.ts";
-import {HtmlBlocks} from "../utils/html-blocks.ts";
-import {CustomHttp} from "../services/custom-http.ts";
-import {config} from "../../config/config.ts";
-import {CalcBalance} from "../services/calc-balance.ts";
+import {RemoveActive} from "../utils/remove-active";
+import {Filter} from "../services/filter";
+import {HtmlBlocks} from "../utils/html-blocks";
+import {CustomHttp} from "../services/custom-http";
+import {config} from "../../config/config";
+import {CalcBalance} from "../services/calc-balance";
+import {OperationResponseType} from "../types/operation-response.type";
+import {DefaultResponseType} from "../types/default-response.type";
 
 export class Operations {
-    operations = null;
-    operationId = null;
+    private operations: OperationResponseType[] | undefined;
+    private operationId: number | null = null;
 
-    tBodyElement = document.getElementById('tbody');
-    filterBtnElem = document.getElementById('filter-buttons');
-    dateFromElem = document.getElementById('date-from');
-    dateToElem = document.getElementById('date-to');
-    intervalBtn = document.getElementById('interval');
-    createButtons = document.getElementById('create-buttons');
+    private tBodyElement: HTMLElement | null = document.getElementById('tbody');
+    private filterBtnElem: HTMLElement | null = document.getElementById('filter-buttons');
+    readonly dateFromElem: HTMLInputElement | null;
+    readonly dateToElem: HTMLInputElement | null;
+    private intervalBtn: HTMLElement | null = document.getElementById('interval');
+    private createButtons: HTMLElement | null = document.getElementById('create-buttons');
 
     constructor() {
+        this.dateFromElem = document.getElementById('date-from') as HTMLInputElement;
+        this.dateToElem = document.getElementById('date-to') as HTMLInputElement; 
         RemoveActive.remove();
-        document.getElementById('operations').classList.add('active');
-        document.getElementById('day').classList.add('active');
+        const operationsElement: HTMLElement | null = document.getElementById('operations');
+        if (operationsElement) {
+            operationsElement.classList.add('active');
+        }
+        const dayElement: HTMLElement | null = document.getElementById('day');
+        if (dayElement) {
+            dayElement.classList.add('active');
+        }
 
         this.init();
 
@@ -28,26 +38,32 @@ export class Operations {
         this.operationActions();
     }
 
-    async init(period, dateFrom, dateTo) {
+    private async init(period?: string, dateFrom?: string, dateTo?: string): Promise<void> {
         this.operations = await Filter.getOperations(period, dateFrom, dateTo);
-        this.operations.sort((a, b) => a.id - b.id);
+        if (this.operations) {
+            this.operations.sort((a, b) => a.id - b.id);
+        }
         this.buildOperationsTable();
         await CalcBalance.getBalance();
     }
 
-    buildOperationsTable() {
-        const that = this;
-        this.tBodyElement.innerHTML = '';
+    private buildOperationsTable(): void {
+        if (!this.operations) return;
 
-        this.operations.forEach(item => {
-            const trElem = document.createElement('tr');
+        const that: Operations = this;
+        if (this.tBodyElement) {
+            this.tBodyElement.innerHTML = '';
+        }
+
+        this.operations.forEach((item: OperationResponseType) => {
+            const trElem: HTMLElement = document.createElement('tr');
             trElem.setAttribute('id', 'operation-' + item.id);
 
-            const thElem = document.createElement('th');
+            const thElem: HTMLElement = document.createElement('th');
             thElem.setAttribute('scope', 'row');
-            thElem.innerText = item.id;
+            thElem.innerText = item.id.toString();
 
-            const tdTypeElem = document.createElement('td');
+            const tdTypeElem: HTMLElement = document.createElement('td');
             if (item.type === 'income') {
                 tdTypeElem.classList.add('text-success');
                 tdTypeElem.innerText = 'доход';
@@ -56,19 +72,24 @@ export class Operations {
                 tdTypeElem.innerText = 'расход';
             }
 
-            const tdCategoryElem = document.createElement('td');
-            tdCategoryElem.innerText = item.category;
+            const tdCategoryElem: HTMLElement = document.createElement('td');
+            if (item.category) {
+                tdCategoryElem.innerText = item.category;
+            } else {
+                tdCategoryElem.innerText = 'Не назначено';
+            }
 
-            const tdAmountElem = document.createElement('td');
+
+            const tdAmountElem: HTMLElement = document.createElement('td');
             tdAmountElem.innerText = item.amount + '$';
 
-            const tdDateElem = document.createElement('td');
+            const tdDateElem: HTMLElement = document.createElement('td');
             tdDateElem.innerText = item.date;
 
-            const tdCommentElem = document.createElement('td');
+            const tdCommentElem: HTMLElement = document.createElement('td');
             tdCommentElem.innerText = item.comment;
 
-            const tdIconsElem = document.createElement('td');
+            const tdIconsElem: HTMLElement = document.createElement('td');
             tdIconsElem.innerHTML = HtmlBlocks.icons;
 
             trElem.appendChild(thElem);
@@ -79,44 +100,57 @@ export class Operations {
             trElem.appendChild(tdCommentElem);
             trElem.appendChild(tdIconsElem);
 
-            that.tBodyElement.appendChild(trElem);
+            if (that.tBodyElement) {
+                that.tBodyElement.appendChild(trElem);
+            }
         });
     }
 
-    filterActions() {
-        const dateInputs = [
+    private filterActions(): void {
+        if (!this.filterBtnElem) return;
+        const dateInputs: (HTMLInputElement | null)[] = [
             this.dateFromElem,
             this.dateToElem
         ];
 
-        this.filterBtnElem.onclick = (event) => {
-            let target = event.target;
+        this.filterBtnElem.onclick = (event): void => {
+            let target: any = event.target;
 
+            if (!target) return;
             if (!target.classList.contains('btn') || target.id === 'interval') {
                 return;
             }
             dateInputs.forEach(item => {
-                item.setAttribute('disabled', 'disabled');
-                item.value = '';
+                (item as HTMLInputElement).setAttribute('disabled', 'disabled');
+                (item as HTMLInputElement).value = '';
             });
-            Filter.activeBtnManager(this.filterBtnElem);
+            if (this.filterBtnElem) {
+                Filter.activeBtnManager(this.filterBtnElem);
+            }
             target.classList.add('active');
-            if (this.dateFromElem.value && this.dateToElem.value) {
-                this.init(target.id, this.dateFromElem.value, this.dateToElem.value)
+            if (this.dateFromElem && this.dateToElem && this.dateFromElem.value && this.dateToElem.value) {
+                this.init(target.id, (this.dateFromElem as HTMLInputElement).value, this.dateToElem.value)
             } else {
                 this.init(target.id);
             }
         }
 
-        this.intervalBtn.onclick = (e) => {
-            Filter.activeBtnManager(this.filterBtnElem);
-            dateInputs.forEach(item => item.removeAttribute('disabled'));
-            e.target.classList.add('active');
+        if (this.intervalBtn) {
+            this.intervalBtn.onclick = (e): void => {
+                const target: any = e.target;
+                if (this.filterBtnElem) {
+                    Filter.activeBtnManager(this.filterBtnElem);
+                }
+                dateInputs.forEach(item => (item as HTMLInputElement).removeAttribute('disabled'));
+                if (target) {
+                    target.classList.add('active');
+                }
+            }
         }
 
         dateInputs.forEach(item => {
-            item.onchange = () => {
-                if (this.dateFromElem.value && this.dateToElem.value) {
+            (item as HTMLInputElement).onchange = () => {
+                if (this.dateFromElem && this.dateToElem && this.dateFromElem.value && this.dateToElem.value) {
                     this.init('interval', this.dateFromElem.value, this.dateToElem.value);
                 }
             }
@@ -124,8 +158,9 @@ export class Operations {
     }
 
     operationActions() {
-        this.tBodyElement.onclick = (e) => {
-            const target = e.target;
+        if (!this.tBodyElement) return;
+        this.tBodyElement.onclick = (e): void => {
+            const target: any = e.target;
 
             if (!target.classList.contains('edit-btn') && !target.classList.contains('remove-btn')) {
                 return;
@@ -134,34 +169,40 @@ export class Operations {
             this.operationId = target.parentElement.parentElement.parentElement.getAttribute('id').split('-')[1];
 
             if (target.classList.contains('edit-btn')) {
-                location.href =  "#/edit-operation?operationId=" + this.operationId;
+                location.href = "#/edit-operation?operationId=" + this.operationId;
             }
         }
 
-        document.getElementById('success-remove').onclick = () => {
-            return this.deleteOperation(this.operationId);
+        const successRemoveElem: HTMLElement | null = document.getElementById('success-remove');
+        if (successRemoveElem) {
+            successRemoveElem.onclick = () => {
+                return this.deleteOperation(this.operationId);
+            }
         }
 
-        this.createButtons.onclick = (e) => {
-            const target = e.target;
+        if (this.createButtons) {
+            this.createButtons.onclick = (e): void => {
+                const target: any = e.target;
 
-            if (!target.classList.contains('btn')) {
-                return;
-            }
+                if (!target.classList.contains('btn')) {
+                    return;
+                }
 
-            if (target.id === 'create-income-operation') {
-                location.href = "#/create-operation?operation=income";
-            } else {
-                location.href = "#/create-operation?operation=expense";
+                if (target.id === 'create-income-operation') {
+                    location.href = "#/create-operation?operation=income";
+                } else {
+                    location.href = "#/create-operation?operation=expense";
+                }
             }
         }
     }
 
-    async deleteOperation(operationId) {
-        const result = await CustomHttp.request(config.host + 'operations/' + operationId, 'DELETE');
+    private async deleteOperation(operationId: number | null): Promise<void> {
+        const result: DefaultResponseType = await CustomHttp.request(config.host + 'operations/' + operationId, 'DELETE');
 
         if (result && !result.error) {
-            const filterButtons = this.filterBtnElem.children;
+            if (!this.filterBtnElem || !this.dateFromElem || !this.dateToElem) return;
+            const filterButtons: HTMLCollection = this.filterBtnElem.children;
             for (let i = 0; i < filterButtons.length; i++) {
                 if (filterButtons[i].classList.contains('active')) {
                     if (filterButtons[i].id === 'interval') {
@@ -172,7 +213,7 @@ export class Operations {
                 }
             }
         } else {
-            throw new Error(result.error);
+            throw new Error(result.message);
         }
     }
 }

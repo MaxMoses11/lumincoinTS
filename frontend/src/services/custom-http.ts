@@ -1,10 +1,10 @@
-import {Auth} from "./auth.ts";
+import {Auth} from "./auth";
 
 export class CustomHttp {
 
-    static async request(url, method = "GET", body = null) {
+    public static async request(url: string, method: string = "GET", body: any = null): Promise<any> {
 
-        const params = {
+        const params: any = {
             method: method,
             headers: {
                 'Content-type': 'application/json',
@@ -12,7 +12,7 @@ export class CustomHttp {
             }
         };
 
-        let token = localStorage.getItem(Auth.accessTokenKey);
+        let token: string | null = localStorage.getItem(Auth.accessTokenKey);
         if (token) {
             params.headers['x-auth-token'] = token;
         }
@@ -21,18 +21,18 @@ export class CustomHttp {
             params.body = JSON.stringify(body);
         }
 
-        const response = await fetch(url, params);
+        const response: Response = await fetch(url, params);
 
         if (response.status < 200 || response.status >= 300) {
             if (response.status === 401) {
-                const result = await Auth.processRefreshTokens();
+                const result: boolean = await Auth.processRefreshTokens();
                 if (result) {
                     return await this.request(url, method, body);
                 } else {
                     return null;
                 }
             }
-            throw new Error(response.message);
+            throw new Error(response.statusText);
         }
 
         return await response.json();

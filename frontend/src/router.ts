@@ -10,10 +10,10 @@ import {CreateCategory} from "./components/create-category";
 import {RouteType} from "./types/route.type";
 
 export class Router {
-    private contentElement: HTMLElement | null = null;
-    private titleElement: HTMLElement | null = null;
-    private sidebarElement: HTMLElement | null = null;
-    private profileFullNameElement: HTMLElement | null = null;
+    readonly contentElement: HTMLElement | null = null;
+    readonly titleElement: HTMLElement | null = null;
+    readonly sidebarElement: HTMLElement | null = null;
+    readonly profileFullNameElement: HTMLElement | null = null;
     private routes: Array<RouteType> = [];
     constructor() {
         this.contentElement = document.getElementById('content');

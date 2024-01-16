@@ -1,17 +1,21 @@
-import {UrlManager} from "../utils/url-manager.ts";
-import {EditOperation} from "./edit-operation";
-import {CustomHttp} from "../services/custom-http.ts";
-import {config} from "../../config/config.ts";
-import {CalcBalance} from "../services/calc-balance.ts";
+import {UrlManager} from "../utils/url-manager";
+import {CustomHttp} from "../services/custom-http";
+import {config} from "../../config/config";
+import {CalcBalance} from "../services/calc-balance";
+import {CategoryOperations} from "../services/category-operations";
+import {QueryParamsType} from "../types/query-params.type";
+import {CategoriesResponseType} from "../types/categories-response.type";
+import {DefaultResponseType} from "../types/default-response.type";
 
 export class CreateOperation {
-    categories = null;
+    private categories: CategoriesResponseType[] | undefined = [];
 
-    typeElem = document.getElementById('type-select');
-    categoryElem = document.getElementById('category-select');
-    amountElem = document.getElementById('amount-input');
-    dateElem = document.getElementById('date-input');
-    commentElem = document.getElementById('comment-input');
+    private typeElem: HTMLInputElement | null = document.getElementById('type-select') as HTMLInputElement;
+    private categoryElem: HTMLInputElement | null = document.getElementById('category-select') as HTMLInputElement;
+    private amountElem: HTMLInputElement | null = document.getElementById('amount-input') as HTMLInputElement;
+    private dateElem: HTMLInputElement | null = document.getElementById('date-input') as HTMLInputElement;
+    private commentElem: HTMLInputElement | null = document.getElementById('comment-input') as HTMLInputElement;
+    readonly routeParams: QueryParamsType;
 
     constructor() {
 
@@ -19,71 +23,70 @@ export class CreateOperation {
 
         this.init();
 
-        this.typeElem.onchange = async () => {
-            this.categoryElem.innerHTML = '';
-            this.categories = await EditOperation.getCategories(this.typeElem.value);
-            EditOperation.fillCategorySelect(this.categories, this.categoryElem);
-        }
-
-        document.getElementById('save-btn').onclick = () => {
-            return this.getForm()
-        };
-
-        document.getElementById('cancel-btn').onclick = () => {
-            location.href = '#/operations';
-        }
-    }
-
-    async init() {
-        await CalcBalance.getBalance();
-        for (let i = 0; i < this.typeElem.children.length; i++) {
-            if (this.typeElem.children[i].value === this.routeParams.operation) {
-                this.typeElem.children[i].setAttribute('selected', 'selected');
+        if (this.typeElem) {
+            this.typeElem.onchange = async (): Promise<void> => {
+                if (this.categoryElem) {
+                    this.categoryElem.innerHTML = '';
+                    if (this.typeElem) {
+                        this.categories = await CategoryOperations.getCategories(this.typeElem.value);
+                    }
+                    CategoryOperations.fillCategorySelect((this.categories as CategoriesResponseType[]), this.categoryElem);
+                }
             }
         }
 
-        this.categories = await EditOperation.getCategories(this.routeParams.operation);
-        EditOperation.fillCategorySelect(this.categories, this.categoryElem);
-    }
+        const saveBtnElement: HTMLElement | null = document.getElementById('save-btn');
+        if (saveBtnElement) {
+            saveBtnElement.onclick = (): Promise<void> => {
+                return this.getForm()
+            }
+        }
 
-    async getForm() {
-        if (CreateOperation.validForm()) {
-            const result = await CustomHttp.request(config.host + 'operations', 'POST', {
-                type: this.typeElem.value,
-                amount: this.amountElem.value,
-                date: this.dateElem.value,
-                comment: this.commentElem.value,
-                category_id: Number(this.categoryElem.value)
-            });
-
-            if (result) {
-                if (result.error) {
-                    throw new Error(result.error);
-                }
-                // await CalcBalance.changeBalance(this.typeElem.value, this.amountElem.value);
+        const canselBtnElement: HTMLElement | null = document.getElementById('cancel-btn');
+        if (canselBtnElement) {
+            canselBtnElement.onclick = (): void => {
                 location.href = '#/operations';
             }
         }
     }
 
-    static validForm() {
-        const formItems = document.getElementById('form').children;
-        let isValid = true;
-        for (let i = 0; i < formItems.length; i++) {
-            if (isValid) {
-                if (!formItems[i].value) {
-                    formItems[i].classList.add('border-danger', 'border-opacity-100');
-                    formItems[i].classList.remove('border-secondary', 'border-opacity-25');
-                    isValid = false;
-                } else {
-                    formItems[i].classList.remove('border-danger', 'border-opacity-100');
-                    formItems[i].classList.add('border-secondary', 'border-opacity-25');
-                    isValid = true;
+    private async init(): Promise<void> {
+
+        await CalcBalance.getBalance();
+        if (this.typeElem) {
+            for (let i = 0; i < this.typeElem.children.length; i++) {
+                if ((this.typeElem.children[i] as HTMLInputElement).value === this.routeParams.operation) {
+                    this.typeElem.children[i].setAttribute('selected', 'selected');
                 }
-            } else {
-                break;
             }
         }
-        return isValid;
+
+        this.categories = await CategoryOperations.getCategories(this.routeParams.operation);
+        if (this.categoryElem) {
+            CategoryOperations.fillCategorySelect((this.categories as CategoriesResponseType[]), this.categoryElem);
+        }
     }
+
+    private async getForm(): Promise<void> {
+        if (this.typeElem && this.amountElem && this.dateElem && this.commentElem && this.categoryElem) {
+            if (CategoryOperations.validForm()) {
+                const result: CategoriesResponseType | DefaultResponseType = await CustomHttp.request(config.host + 'operations', 'POST', {
+                    type: this.typeElem.value,
+                    amount: this.amountElem.value,
+                    date: this.dateElem.value,
+                    comment: this.commentElem.value,
+                    category_id: Number(this.categoryElem.value)
+                });
+
+                if (result) {
+                    if ((result as DefaultResponseType).error !== undefined) {
+                        throw new Error((result as DefaultResponseType).message);
+                    }
+
+                    location.href = '#/operations';
+                }
+            }
+        }
+    }
+
 }

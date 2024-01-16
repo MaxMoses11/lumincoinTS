@@ -1,10 +1,11 @@
-import {CustomHttp} from "./custom-http.ts";
+import {CustomHttp} from "./custom-http";
 import {config} from "../../config/config";
+import {OperationResponseType} from "../types/operation-response.type";
 
 export class Filter {
-    static async getOperations(period = null, dateFrom = null, dateTo = null) {
+    public static async getOperations(period: string | null = null, dateFrom: string | null = null, dateTo: string | null = null): Promise<OperationResponseType[] | undefined> {
 
-        let result;
+        let result: OperationResponseType[] | undefined;
 
         if (!period && !dateFrom && !dateTo) {
             result = await CustomHttp.request(config.host + 'operations');
@@ -14,12 +15,13 @@ export class Filter {
             result = await CustomHttp.request(config.host + 'operations?period=' + period + '&dateFrom=' + dateFrom + '&dateTo=' + dateTo);
         }
 
-        if (result && !result.error) {
+        if (result) {
             return result;
         }
     }
 
-    static activeBtnManager(filterBtnElem) {
+    public static activeBtnManager(filterBtnElem: HTMLElement | null): void {
+        if (!filterBtnElem) return;
         for (let i = 0; i < filterBtnElem.children.length; i++) {
             filterBtnElem.children[i].classList.remove('active');
         }
